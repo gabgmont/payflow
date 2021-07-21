@@ -18,8 +18,7 @@ class InsertBoletoPage extends StatefulWidget {
 
 class _InsertBoletoPageState extends State<InsertBoletoPage> {
   final controller = InsertBoletoController();
-  final moneyInputTextController =
-      MoneyMaskedTextController(leftSymbol: 'R\$', decimalSeparator: ',');
+  final moneyInputTextController = MoneyMaskedTextController(leftSymbol: 'R\$', decimalSeparator: ',');
   final dueDateInputTextController = MaskedTextController(mask: '00/00/0000');
   final barcodeInputTextController = TextEditingController();
 
@@ -42,63 +41,74 @@ class _InsertBoletoPageState extends State<InsertBoletoPage> {
           color: AppColors.input,
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 90),
-            child: Text(
-              "Preencha os dados do boleto.",
-              style: AppTextStyles.titleBoldHeading,
-              textAlign: TextAlign.center,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 90),
+              child: Text(
+                "Preencha os dados do boleto.",
+                style: AppTextStyles.titleBoldHeading,
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
-          Form(
-            key: controller.formKey,
-            child: Column(
-              children: [
-                InputTextWidget(
-                  label: 'Nome do boleto',
-                  validator: controller.validateName,
-                  icon: Icons.description_outlined,
-                  onChanged: (value) {},
-                ),
-                InputTextWidget(
-                  controller: dueDateInputTextController,
-                  label: 'Vencimento',
-                  validator: controller.validateVencimento,
-                  icon: FontAwesomeIcons.timesCircle,
-                  onChanged: (value) {},
-                ),
-                InputTextWidget(
-                  controller: moneyInputTextController,
-                  label: 'Valor',
-                  validator: (_) => controller
-                      .validateValor(moneyInputTextController.numberValue),
-                  icon: FontAwesomeIcons.wallet,
-                  onChanged: (value) {},
-                ),
-                InputTextWidget(
-                  controller: barcodeInputTextController,
-                  label: 'Código do boleto',
-                  validator: controller.validateCodigo,
-                  icon: FontAwesomeIcons.barcode,
-                  onChanged: (value) {},
-                )
-              ],
-            ),
-          )
-        ],
+            Form(
+              key: controller.formKey,
+              child: Column(
+                children: [
+                  InputTextWidget(
+                    label: 'Nome do boleto',
+                    validator: controller.validateName,
+                    icon: Icons.description_outlined,
+                    onChanged: (value) {
+                      controller.onChange(name: value);
+                    },
+                  ),
+                  InputTextWidget(
+                    controller: dueDateInputTextController,
+                    label: 'Vencimento',
+                    validator: controller.validateVencimento,
+                    icon: FontAwesomeIcons.timesCircle,
+                    onChanged: (value) {
+                      controller.onChange(dueDate: value);
+                    },
+                  ),
+                  InputTextWidget(
+                    controller: moneyInputTextController,
+                    numericKeyboard: true,
+                    label: 'Valor',
+                    validator: (_) => controller
+                        .validateValor(moneyInputTextController.numberValue),
+                    icon: FontAwesomeIcons.wallet,
+                    onChanged: (value) {
+                      controller.onChange(value: moneyInputTextController.numberValue);
+                    },
+                  ),
+                  InputTextWidget(
+                    controller: barcodeInputTextController,
+                    label: 'Código do boleto',
+                    validator: controller.validateCodigo,
+                    icon: FontAwesomeIcons.barcode,
+                    onChanged: (value) {
+                      controller.onChange(barcode: value);
+                    },
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
       bottomNavigationBar: SetLabelButtons(
         primaryLabel: 'Cancelar',
         primaryOnPressed: () {
-          debugPrint('clicou');
-          Navigator.pushNamed(context, '/home');
+          Navigator.pop(context);
         },
         secondaryLabel: 'Cadastrar',
-        secondaryOnPressed: () {
-          debugPrint('clicou');
+        secondaryOnPressed: () async {
+          await controller.cadastrarBoleto();
+          Navigator.pop(context);
         },
         enableSecondaryColor: true,
       ),

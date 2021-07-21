@@ -14,7 +14,7 @@ class AuthController {
       saveUser(user);
       _user = user;
       print('Autenticou');
-      Navigator.pushReplacementNamed(context, "/home");
+      Navigator.pushReplacementNamed(context, "/home", arguments: user);
     } else {
       print('Não Autenticou');
       Navigator.pushReplacementNamed(context, "/login");
