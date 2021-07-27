@@ -18,12 +18,6 @@ class _MeusBoletosPageState extends State<MeusBoletosPage> {
   final controller = BoletoListController();
 
   @override
-  void initState() {
-    print('criando meus boletos');
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final screen = MediaQuery.of(context).size;
 
